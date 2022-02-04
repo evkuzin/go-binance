@@ -516,6 +516,11 @@ func (c *Client) NewGetAssetDetailService() *GetAssetDetailService {
 	return &GetAssetDetailService{c: c}
 }
 
+// NewGetAssetTradeFeeService init get asset trade fee service
+func (c *Client) NewGetAssetTradeFeeService() *GetAssetTradeFee {
+	return &GetAssetTradeFee{c: c}
+}
+
 // NewAveragePriceService init average price service
 func (c *Client) NewAveragePriceService() *AveragePriceService {
 	return &AveragePriceService{c: c}

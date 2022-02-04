@@ -6,6 +6,48 @@ import (
 	"net/http"
 )
 
+// GetAssetTradeFee fetches trade fees.
+//
+// See https://binance-docs.github.io/apidocs/spot/en/#trade-fee-user_data
+type GetAssetTradeFee struct {
+	c     *Client
+	asset *string
+}
+
+type TradeFee struct {
+	Symbol          string `json:"symbol"`
+	MakerCommission string `json:"makerCommission"`
+	TakerCommission string `json:"takerCommission"`
+}
+
+// Asset sets the asset parameter.
+func (s *GetAssetTradeFee) Asset(asset string) *GetAssetTradeFee {
+	s.asset = &asset
+	return s
+}
+
+// Do sends the request.
+func (s *GetAssetTradeFee) Do(ctx context.Context) (res []TradeFee, err error) {
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/sapi/v1/asset/tradeFee",
+		secType:  secTypeSigned,
+	}
+	if s.asset != nil {
+		r.setParam("asset", *s.asset)
+	}
+	data, err := s.c.callAPI(ctx, r)
+	if err != nil {
+		return
+	}
+	res = []TradeFee{}
+	err = json.Unmarshal(data, &res)
+	if err != nil {
+		return
+	}
+	return res, nil
+}
+
 // GetAssetDetailService fetches all asset detail.
 //
 // See https://binance-docs.github.io/apidocs/spot/en/#asset-detail-user_data
